@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Windows.System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -6,58 +6,85 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media;
+using Windows.UI;
 
 namespace ColorBinding.ViewModel
 {
     class MainViewModel :INotifyPropertyChanged
     {
-        private double _red;
-        private double _green;
-        private double _blue;
+        private Color _color;
         private SolidColorBrush _selectColor;
 
         public MainViewModel()
         {
-            Red = 100;
-            Green = 200;
-            Blue = 50;
+            _color = new Color();
+            _color.A = 255;
         }
-        private double Red {
-            get 
+        public int Red {
+            get => _color.R;
+                
+            set
             {
-                return _red;
-            } set
+                _color.R = (byte)value;
+                SelectedColor = new SolidColorBrush(_color);
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("MergedDecimal");
+                NotifyPropertyChanged("HexaDecimal");
+            }
+        }
+        public int Green
+        {
+            get => _color.G;
+
+            set
             {
-                _red = value;
+                _color.G = (byte)value;
+                SelectedColor = new SolidColorBrush(_color);
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("MergedDecimal");
+                NotifyPropertyChanged("HexaDecimal");
+            }
+        }
+        public int Blue
+        {
+            get => _color.B;
+
+            set
+            {
+                _color.B = (byte)value;
+                SelectedColor = new SolidColorBrush(_color);
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("MergedDecimal");
+                NotifyPropertyChanged("HexaDecimal");
+            }
+        }
+        public SolidColorBrush SelectedColor
+        {
+            get => _selectColor;
+            set
+            {
+                _selectColor = value;
                 NotifyPropertyChanged();
             }
         }
-        private double Blue
+        public string MergedDecimal
+        {
+            get => string.Format("({0},{1},{2})", Red, Green, Blue);
+
+        }
+        public string HexaDecimal
         {
             get
             {
-                return _blue;
-            }
-            set
-            {
-                _blue = value;
-                NotifyPropertyChanged();
+                string r = Red.ToString("X");
+                string g = Green.ToString("X");
+                string b = Blue.ToString("X");
+                return "#" + r.PadLeft(2, '0') + g.PadLeft(2, '0') + b.PadLeft(2, '0');
             }
         }
-        private double Green
-        {
-            get
-            {
-                return _green;
-            }
-            set
-            {
-                _green = value;
-                NotifyPropertyChanged();
-            }
-        }
+
         public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
